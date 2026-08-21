@@ -252,6 +252,28 @@ def manejar_productos():
     else:
         return jsonify(productos), 200
 
+@app.route('/productos/<prod_id>', methods=['DELETE'])
+def eliminar_producto_servidor(prod_id):
+    productos = leer_json("server_productos", [])
+    productos_filtrados = []
+    encontrado = False
+
+    for p in productos:
+        # Validar coincidencia por id (numérico o string) o por código
+        match_id = (str(p.get("id", "")) == str(prod_id))
+        match_cod = (str(p.get("codigo", "")).strip().lower() == str(prod_id).strip().lower())
+        
+        if match_id or match_cod:
+            encontrado = True
+        else:
+            productos_filtrados.append(p)
+
+    if not encontrado:
+        return jsonify({"error": "Producto no encontrado en la nube"}), 404
+
+    guardar_json("server_productos", productos_filtrados)
+    return jsonify({"status": "success", "message": f"Producto {prod_id} eliminado de la nube"}), 200
+
 # --- RUTAS DE VENTAS Y REVERSIÓN ---
 @app.route('/ventas', methods=['GET', 'POST'])
 def manejar_ventas():
