@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+ffrom flask import Flask, request, jsonify
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -251,6 +251,25 @@ def manejar_productos():
         return jsonify({"status": "success", "message": "Producto guardado"}), 201
     else:
         return jsonify(productos), 200
+
+@app.route('/productos/<path:prod_id>', methods=['DELETE'])
+def eliminar_producto(prod_id):
+    productos = leer_json("server_productos", [])
+    prod_id_str = str(prod_id).strip().lower()
+    
+    longitud_inicial = len(productos)
+    # Filtra descartando por ID numérico o por código de barras
+    productos_filtrados = [
+        p for p in productos 
+        if str(p.get("id", "")).strip().lower() != prod_id_str 
+        and str(p.get("codigo", "")).strip().lower() != prod_id_str
+    ]
+    
+    if len(productos_filtrados) < longitud_inicial:
+        guardar_json("server_productos", productos_filtrados)
+        return jsonify({"status": "success", "message": f"Producto {prod_id} eliminado de Supabase"}), 200
+    else:
+        return jsonify({"error": "Producto no encontrado"}), 404
 
 # --- RUTAS DE VENTAS Y REVERSIÓN ---
 @app.route('/ventas', methods=['GET', 'POST'])
