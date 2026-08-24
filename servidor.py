@@ -77,9 +77,9 @@ def manejar_configuracion():
     config_default = {
         "url_servidor": "https://sistema-pos-20cm.onrender.com",
         "tasa_bcv": 36.50,
-        "correo_destino": "",
-        "correo_emisor": "",
-        "pass_emisor": "",
+        "correo_destino": "expendiodemedicinas.lc@gmail.com",
+        "correo_emisor": "reportesdeventas29@gmail.com",
+        "pass_emisor": "pflrvygszjppzzos",
         "actualizar_tasa_auto": "Sí"
     }
     if request.method == 'POST':
